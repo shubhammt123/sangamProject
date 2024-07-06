@@ -19,7 +19,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 500,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
 };
@@ -83,6 +82,15 @@ export default function DataTable({open,setOpen}) {
       setFormData(data);
       setOpen(true);
     }
+
+    const handleDelete = async (id)=>{
+      try {
+        const response = await axios.delete(`http://localhost:3000/users/deleteUser/${id}`);
+        fetchData();
+      } catch (error) {
+        console.log(error);
+      }
+    }
     const columns = [
       { field: 'id', headerName: 'ID', width: 70 },
       { field: 'firstName', headerName: 'First Name', width: 130 },
@@ -119,7 +127,9 @@ export default function DataTable({open,setOpen}) {
                 <div className='flex justify-evenly items-center h-full'>
                   <div> <CiEdit className='text-xl cursor-pointer' onClick={()=>{handleEditCLick(params.row)}}  /></div>
                    
-                    <MdDelete className='text-xl' />
+                    <MdDelete className='text-xl cursor-pointer' onClick={()=>{
+                      handleDelete(params.row._id)
+                    }} />
                 </div>
             )
         }
