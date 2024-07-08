@@ -9,6 +9,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import { BiBorderRadius } from 'react-icons/bi';
+
 
 
 
@@ -21,6 +23,7 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
+  borderRadius : "10px"
 };
 
 
@@ -96,17 +99,22 @@ export default function DataTable({open,setOpen}) {
       { field: 'firstName', headerName: 'First Name', width: 130 },
       { field: 'lastName', headerName: 'Last Name', width: 130 },
     
-      { field: 'email', headerName: 'Email', width: 160 },
+      { field: 'email', headerName: 'Email', width: 240 },
       {
         field: 'contactNumber',
         headerName: 'Contact Number',
-        type: 'number',
+        
         width: 160,
       },
       {
-        field: 'password',
+        // field: 'password',
         headerName: 'Password',
         width: 160,
+        renderCell : ()=>(
+          <div>
+              *****
+          </div>
+      )
       },
       {
         field : 'status',
@@ -121,15 +129,15 @@ export default function DataTable({open,setOpen}) {
       {
         field : 'Action',
         headerName : 'action',
-        width : 90,
+        width : 100,
         renderCell : (params)=>{
             return (
-                <div className='flex justify-evenly items-center h-full'>
-                  <div> <CiEdit className='text-xl cursor-pointer' onClick={()=>{handleEditCLick(params.row)}}  /></div>
-                   
-                    <MdDelete className='text-xl cursor-pointer' onClick={()=>{
-                      handleDelete(params.row._id)
-                    }} />
+                <div className='flex gap-3 items-center h-full'>
+                  <div className='p-2 bg-gray-200 rounded-full shadow-2xl cursor-pointer hover:shadow-inner hover:scale-[1.1] transition hover:bg-blue-600 hover:text-white' onClick={()=>{handleEditCLick(params.row)}} > <CiEdit className='text-xl '  /></div>
+                   <div className='p-2 bg-gray-200 rounded-full shadow-xl cursor-pointer hover:shadow-inner hover:scale-[1.1] hover:bg-red-600 hover:text-slate-200 transition' onClick={()=>{handleDelete(params.row._id)}}>
+                   <MdDelete className='text-xl' />
+                   </div>
+                    
                 </div>
             )
         }
@@ -142,7 +150,7 @@ export default function DataTable({open,setOpen}) {
         columns={columns}
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
+            paginationModel: { page: 0, pageSize: 5 },
           },
         }}
         pageSizeOptions={[5, 10]}

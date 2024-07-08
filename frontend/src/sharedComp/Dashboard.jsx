@@ -6,7 +6,7 @@ const Dashboard = () => {
     const handleOpen = () => setOpen(true);
   return (
     <div>
-        <div className='mx-auto w-[95%] h-[91vh] '>
+        <div className='mx-auto w-[95%] h-[87.7vh] '>
             <div className='flex justify-between items-center h-[15vh]'>
             <div>
                 <h1 className='text-2xl font-semibold'>
