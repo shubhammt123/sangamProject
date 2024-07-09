@@ -8,7 +8,6 @@ const Login = () => {
     const navigate = useNavigate();
     const context = useOutletContext();
 
-    console.log(context);
 
     const handleChange = (e)=>{
         setFormData({...formData , [e.target.name] : e.target.value});
@@ -16,10 +15,12 @@ const Login = () => {
     const  handleSubmit = async (e)=>{
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:3000/users/login",formData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URI}/users/login`,formData);
             context.setAuth(true);
             context.setRole(response.data.data.role)
-            navigate("/profile")
+            localStorage.setItem("token",response.data.token);
+            // localStorage.setItem("role",response.data.data.role)
+            navigate("/")
             console.log(response)
         } catch (error) {
             console.log(error);            

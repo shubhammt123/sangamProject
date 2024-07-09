@@ -1,9 +1,10 @@
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.getAllUsers = async (req,res)=>{
     try {
-        const users = await User.find();
+        const users = await User.find({role : "user"});
         res.status(200).send({message : "User Fetched" , data : users});
     } catch (error) {
         res.status(500).send({message : "error" , error : error});
@@ -84,11 +85,19 @@ exports.login = async (req,res)=>{
         if(!user){
             return res.status(404).send({message : "User not found"});
         }
+
+        if(!user.status){
+            return res.status(401).send({message : "Account Deactivated! Please contact Admin"})
+        }
         const isMatched = await bcrypt.compare(password , user.password);
         if(!isMatched){
             return res.status(401).send({message : "Invalid Password"});
         }
-        res.status(200).send({message : "User LoggedIn" , data : user})
+
+        
+
+        const token = jwt.sign({id : user._id , name : `${user.firstName} ${user.lastName}`,role : user.role},"your_jwt_secret_key" , {"expiresIn" : "10h"});
+        res.status(200).send({message : "User LoggedIn" , data : user , token : token})
 
     } catch (error) {
         res.status(500).send({message : "error"});

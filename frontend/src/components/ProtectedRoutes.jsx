@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
+import Navbar from '../sharedComp/Navbar';
 
 const ProtectedRoutes = ({allowedRole}) => {
     const context = useOutletContext();
@@ -16,7 +17,9 @@ const ProtectedRoutes = ({allowedRole}) => {
         }
     },[])
   return (
-    <div><Outlet /></div>
+    <div>
+      <Navbar context={context} />
+      <Outlet /></div>
   )
 }
 

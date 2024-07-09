@@ -10,6 +10,7 @@ import Profile from '../components/Profile'
 import MyOrder from '../components/MyOrder'
 import Order from '../components/Order'
 import Admin from '../components/Admin'
+import AdminUser from '../components/AdminUser'
 
 const Router = createBrowserRouter([
     
@@ -62,6 +63,10 @@ const Router = createBrowserRouter([
                     {
                         path : "/admin",
                         element : <Admin />
+                    },
+                    {
+                        path : "/adminuser",
+                        element : <AdminUser />
                     }
                 ]
             },

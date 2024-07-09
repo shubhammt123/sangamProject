@@ -10,6 +10,9 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { BiBorderRadius } from 'react-icons/bi';
+import Switch from '@mui/material/Switch';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
 
 
 
@@ -28,11 +31,13 @@ const style = {
 
 
 
-export default function DataTable({open,setOpen}) {
+export default function DataTable({open,setOpen , setOpenSnackBar}) {
 
     const [rows , setRows] = useState([]);
     const [formData,setFormData] = useState({});
     const [edit,setEdit] = useState(false);
+    const [loading , setLoading] = useState(null);
+    
     // const [rowData , setRowData] = useState({});
     console.log(formData);
     const handleClose = () => {
@@ -42,6 +47,7 @@ export default function DataTable({open,setOpen}) {
     };
 
     const fetchData = async ()=>{
+      setLoading(true);
         try {
             const response = await axios.get("http://localhost:3000/users/getAllUsers");
             
@@ -49,10 +55,11 @@ export default function DataTable({open,setOpen}) {
                 return {...item,id : i+1}
             });
             setRows(newRows);
-
+            setLoading(false);
             
         } catch (error) {
             console.log(error);
+            setLoading(false);
         }
     } 
 
@@ -64,15 +71,15 @@ export default function DataTable({open,setOpen}) {
       setFormData({...formData,[e.target.name] : e.target.value});
     }
 
+    const handleSwitch = (e)=>{
+      setFormData({...formData , [e.target.name] : e.target.checked})
+    }
     const handleSubmit = async (e)=>{
       e.preventDefault();
       try {
-        if(edit){
-          const response = await axios.put(`http://localhost:3000/users/updateUser/${formData._id}`,formData);
-        }else{
-          const response = await axios.post("http://localhost:3000/users/createUser",formData);
-        }
         
+          const response = await axios.put(`http://localhost:3000/users/updateUser/${formData._id}`,formData);
+          setOpenSnackBar(true);
         handleClose();
         fetchData();
       } catch (error) {
@@ -120,9 +127,9 @@ export default function DataTable({open,setOpen}) {
         field : 'status',
         headerName : 'Status',
         width : 160,
-        renderCell : ()=>(
+        renderCell : (params)=>(
             <div>
-                Active
+               {params.row.status ? "Active" : "Deactive"}
             </div>
         )
       },
@@ -143,6 +150,17 @@ export default function DataTable({open,setOpen}) {
         }
       },
     ];
+
+
+  if(loading){
+    return (
+      <div>
+        <CircularProgress />
+      </div>
+    )
+  }
+
+  
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -179,15 +197,22 @@ export default function DataTable({open,setOpen}) {
               <div><input type="email" placeholder='Email' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='email'  onChange={handleChange} value={formData.email || ""} /></div>
               <div><input type="password" placeholder='Password' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='password'  onChange={handleChange} disabled={edit} value={formData.password || ""}/></div>
               <div><input type="number" placeholder='Contact Number' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='contactNumber'  onChange={handleChange} value={formData.contactNumber || ""} /></div>
+              <div  className='flex items-center'>
+              <Switch defaultChecked={formData.status} name='status' onChange={handleSwitch} />
+              <p>{formData.status ? "Active" : "Deactive"}</p>
+              </div>
               </div>
               <button type="submit" className='bg-blue-600 text-white p-2 rounded  py-1 active:bg-blue-800'>Submit</button>
             </form>
+            
           </div>
         </div>
           
         </Box>
+        
       </Modal>
       </div>
+      
     </div>
   );
 }
