@@ -6,6 +6,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import { useSelector } from 'react-redux';
 
 
 const Navbar = ({context}) => {
@@ -13,7 +15,9 @@ const Navbar = ({context}) => {
     localStorage.clear();
     // context.setAuth(false);
   }
-  console.log(context)
+
+  const {  cartItems } = useSelector((state)=>state.cart)
+
   return (
     <div className='bg-white flex justify-between items-center p-2 py-4'>
         <div >
@@ -26,10 +30,16 @@ const Navbar = ({context}) => {
             </div>
             
         </div>
-        <div>
+        <div className='flex gap-4'>
+          <div>My Cart : {cartItems.length}</div>
           {context?.auth ? (
             context.role === "user" ? 
             <div>
+              <IconButton aria-label="cart">
+      <StyledBadge badgeContent={4} color="secondary">
+        <ShoppingCartIcon />
+      </StyledBadge>
+    </IconButton>
       {/* <FormControl sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
         <Select
