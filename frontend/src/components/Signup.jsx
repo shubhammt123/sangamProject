@@ -8,12 +8,20 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const handleChange = (e)=>{
-        setFormData({...formData , [e.target.name] : e.target.value});
+        setFormData({...formData , [e.target.name] : e.target.files ? e.target.files[0] : e.target.value});
     }
     const  handleSubmit = async (e)=>{
         e.preventDefault();
+        const data = new FormData();
+        data.append("firstName",formData.firstName);
+        data.append("lastName",formData.lastName);
+        data.append("email",formData.email);
+        data.append("password",formData.password);
+        data.append("contactNumber",formData.contactNumber);
+        data.append("userImage",formData.userImage);
+        
         try {
-            const response = await axios.post("http://localhost:3000/users/signup",formData);
+            const response = await axios.post("http://localhost:3000/users/signup",data);
             console.log(response)
         } catch (error) {
             console.log(error);            
@@ -49,6 +57,10 @@ const Signup = () => {
                         <div>
                             <label htmlFor="">Contact No.</label>
                             <input type="number" name='contactNumber' placeholder='Contact No.' className='block p-2 outline-none border rounded my-2' onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label htmlFor="">Profile Pic</label>
+                            <input type="file" name='userImage' className='block p-2 w-3/4 text-xs outline-none border rounded my-2' onChange={handleChange} />
                         </div>
                         
                     </div>

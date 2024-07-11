@@ -59,7 +59,7 @@ exports.deleteUser = async (req,res)=>{
 
 exports.signup = async (req,res)=>{
     const { firstName , lastName , email , password , contactNumber } = req.body;
-
+    // console.log(req.file)
     try {
         const existingUser = await User.findOne({email : email});
         
@@ -67,8 +67,10 @@ exports.signup = async (req,res)=>{
             return res.status(400).send({message : "user already exists"});
         }
 
+        const userImage = req.file.path;
+
         const hashedPassword = await bcrypt.hash(password , 12);
-        const user = new User({firstName : firstName , lastName : lastName , email : email , password : hashedPassword , contactNumber : contactNumber , status : true , role : "user"});
+        const user = new User({firstName : firstName , lastName : lastName , email : email , password : hashedPassword , contactNumber : contactNumber , status : true , role : "user" , userImage : userImage});
 
         await user.save();
         return res.status(201).send({message : "User Created", data : user})

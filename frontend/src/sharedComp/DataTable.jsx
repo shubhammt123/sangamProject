@@ -39,6 +39,7 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
     const [loading , setLoading] = useState(null);
     
     // const [rowData , setRowData] = useState({});
+    console.log(rows[2]?.userImage)
     console.log(formData);
     const handleClose = () => {
       setOpen(false);
@@ -174,6 +175,7 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
         pageSizeOptions={[5, 10]}
         // checkboxSelection
       />
+      <img src={`http://localhost:3000/${rows[2]?.userImage}`} alt="" />
       <div>
       <Modal
         open={open}

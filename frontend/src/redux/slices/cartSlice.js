@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    cartItems : [],
+    cartItems : JSON.parse(localStorage.getItem("cart")) ||[],
     status : "idle",
     error : null
 };
@@ -13,6 +13,7 @@ const cartSlice = createSlice({
     reducers : {
         add(state,action){
             state.cartItems.push(action.payload);
+            localStorage.setItem("cart",JSON.stringify(state.cartItems));
         },
         setStatus(state,action){
             state.status =  action.payload;

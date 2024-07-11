@@ -8,6 +8,19 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { useSelector } from 'react-redux';
+import Badge from '@mui/material/Badge';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
 
 
 const Navbar = ({context}) => {
@@ -32,14 +45,15 @@ const Navbar = ({context}) => {
         </div>
         <div className='flex gap-4'>
           <div>My Cart : {cartItems.length}</div>
+          <div><IconButton aria-label="cart">
+      <StyledBadge badgeContent={cartItems.length} color="secondary">
+        <ShoppingCartIcon />
+      </StyledBadge>
+    </IconButton></div>
           {context?.auth ? (
             context.role === "user" ? 
             <div>
-              <IconButton aria-label="cart">
-      <StyledBadge badgeContent={4} color="secondary">
-        <ShoppingCartIcon />
-      </StyledBadge>
-    </IconButton>
+              
       {/* <FormControl sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
         <Select

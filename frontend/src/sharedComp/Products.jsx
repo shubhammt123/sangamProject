@@ -3,39 +3,38 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { add } from '../redux/slices/cartSlice';
 import { productData , setStatus , setError } from '../redux/slices/productSlice';
+import { fetchData , STATUES } from '../redux/slices/productSlice';
 
 const Products = () => {
-    const [data,setData] = useState([]);
-    const [cart , setCart] = useState([]);
 
     const dispatch = useDispatch();
     const { products , status } = useSelector((state)=>state.product);
-    const fecthData = async ()=>{
-        dispatch(setStatus("loading"))
-        try {
-            const response = await axios.get("https://fakestoreapi.com/products");
+    // const fecthData = async ()=>{
+    //     dispatch(setStatus("loading"))
+    //     try {
+    //         const response = await axios.get("https://fakestoreapi.com/products");
 
-            // console.log(response)
+    //         // console.log(response)
             
-            dispatch(productData(response.data));
-            dispatch(setStatus("idle"))
-        } catch (error) {
-            dispatch(setError(error));
-            dispatch(setStatus("error"))
+    //         dispatch(productData(response.data));
+    //         dispatch(setStatus("idle"))
+    //     } catch (error) {
+    //         dispatch(setError(error));
+    //         dispatch(setStatus("error"))
             
-        }
-    }
+    //     }
+    // }
 
-    console.log(cart);
+    
     useEffect(()=>{
-        fecthData();
+        dispatch(fetchData());
     },[])
 
     const handleClick = (data)=>{
         dispatch(add(data));
     }
 
-    if(status === "loading"){
+    if(status === STATUES.LOADING){
         return (
             <div className='text-3xl font-bold'>Loading...</div>
         )
