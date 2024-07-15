@@ -15,8 +15,12 @@ connectDb();
 // const upload = multer({ dest: 'uploads/' })
 app.use("/uploads",express.static(path.join(__dirname,"uploads")));
 
+app.get("/",(req,res)=>{
+    res.send("Hello")
+})
+
 app.use("/users",userRoutes);
 
-app.listen(3000,()=>{
+app.listen(3000,"0.0.0.0",()=>{
     console.log("Server is running on 3000")
 })

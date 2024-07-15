@@ -80,6 +80,7 @@ exports.signup = async (req,res)=>{
 }
 
 exports.login = async (req,res)=>{
+    console.log("Login Api")
     const { email , password } = req.body;
     try {
         const user = await User.findOne({email : email});
@@ -99,7 +100,7 @@ exports.login = async (req,res)=>{
         
 
         const token = jwt.sign({id : user._id , name : `${user.firstName} ${user.lastName}`,role : user.role},"your_jwt_secret_key" , {"expiresIn" : "10h"});
-        res.status(200).send({message : "User LoggedIn" , data : user , token : token})
+        res.status(200).send({message : "User LoggedIn" , data : user , token : token  , role   : user.role})
 
     } catch (error) {
         res.status(500).send({message : "error"});
