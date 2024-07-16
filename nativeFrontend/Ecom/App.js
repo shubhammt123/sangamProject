@@ -4,8 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import AppNavigator from './Navigations/AppNavigator';
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
+import registerNNPushToken from 'native-notify';
 
 export default function App() {
+  registerNNPushToken(22492, 'vLVwD12ZwJOHxPFHlh1h1Q');
   return (
     <Provider store={store}>
     <NavigationContainer>

@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
     role : {type : String , required : true},
     status : {type : Boolean , required : true},
     userImage : {type : String , required  : true}
+    
 });
 
 module.exports = mongoose.model("User",userSchema);

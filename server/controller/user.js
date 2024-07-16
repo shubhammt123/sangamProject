@@ -81,6 +81,7 @@ exports.signup = async (req,res)=>{
 
 exports.login = async (req,res)=>{
     console.log("Login Api")
+    console.log(req.body)
     const { email , password } = req.body;
     try {
         const user = await User.findOne({email : email});
@@ -103,6 +104,7 @@ exports.login = async (req,res)=>{
         res.status(200).send({message : "User LoggedIn" , data : user , token : token  , role   : user.role})
 
     } catch (error) {
+        console.log(error)
         res.status(500).send({message : "error"});
     }
 }

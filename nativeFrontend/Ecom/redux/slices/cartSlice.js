@@ -12,7 +12,6 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         add(state, action) {
-            console.log(action.payload)
             state.cartItems.push(action.payload);
             AsyncStorage.setItem("cart", JSON.stringify(state.cartItems));
         },

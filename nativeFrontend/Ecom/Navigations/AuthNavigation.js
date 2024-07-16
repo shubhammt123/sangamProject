@@ -6,6 +6,7 @@ import Cart from '../components/Cart';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../components/Login';
 import Signup from '../components/Signup';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,9 +24,9 @@ const LoginStack = ()=>{
 const AuthNavigation = () => {
   return (
     <Tab.Navigator>
-        <Tab.Screen name='HomeScreen' component={HomeNavigation} options={{headerShown : false}} />
+        <Tab.Screen name='HomeScreen' component={HomeNavigation} options={{headerShown : false , tabBarIcon : ()=><FontAwesome name="home" size={24} color="black" />}} />
         <Tab.Screen name='Cart' component={Cart} />
-        <Tab.Screen name='LoginScreen' component={LoginStack} />
+        <Tab.Screen name='LoginScreen' component={LoginStack} options={{headerShown : false}} />
     </Tab.Navigator>
   )
 }
