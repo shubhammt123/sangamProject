@@ -1,6 +1,8 @@
 const express = require("express");
 const connectDb = require("./config/db");
 const userRoutes = require("./routes/user");
+const productRoute = require("./routes/product");
+const orderRoutes = require("./routes/order")
 const cors = require("cors");
 // const multer = require("multer");
 const path = require("path");
@@ -20,6 +22,8 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/users",userRoutes);
+app.use("/products",productRoute);
+app.use("/orders",orderRoutes);
 
 app.listen(3000,"0.0.0.0",()=>{
     console.log("Server is running on 3000")
