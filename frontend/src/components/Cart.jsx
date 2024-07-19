@@ -4,10 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { remove, increaseQuantity, decreaseQuantity } from '../redux/slices/cartSlice';
 import {loadStripe} from '@stripe/stripe-js';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
     const { cartItems } = useSelector((state) => state.cart);
+    const { role , auth } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     console.log(cartItems)
 
@@ -26,23 +29,32 @@ const Cart = () => {
     const totalSum = cartItems.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
 
     const handleCheckout = async ()=>{
-        try {
-            const stripe = await loadStripe('your-publishable-key');
-            const body = {
-                products : cartItems
+        if(auth){
+            if(role==="admin"){
+                return alert("Please Login with admin account")
             }
-
-            const response = await axios.post(`${import.meta.env.VITE_API_URI}/create-checkout-session`,body);
-            const result = stripe.redirectToCheckout({
-                sessionId : response.data.id
-            });
-            if(result.error){
-                console.log(error)
-            }
-            
-        } catch (error) {
-            console.log(error);
+            navigate("/checkout")
+            // try {
+            //     const stripe = await loadStripe('your-publishable-key');
+            //     const body = {
+            //         products : cartItems
+            //     }
+    
+            //     const response = await axios.post(`${import.meta.env.VITE_API_URI}/create-checkout-session`,body);
+            //     const result = stripe.redirectToCheckout({
+            //         sessionId : response.data.id
+            //     });
+            //     if(result.error){
+            //         console.log(error)
+            //     }
+                
+            // } catch (error) {
+            //     console.log(error);
+            // }
+        }else{
+            alert("Please login first")
         }
+        
     }
 
     

@@ -20,18 +20,6 @@ exports.getOrderByUserId = async (req,res)=>{
     }
 }
 
-exports.createOrder = async (req,res)=>{
-    
-
-    try {
-        const order = new Order(req.body);
-
-        await order.save();
-        return res.status(201).send({message : "Order Created", data : order})
-    } catch (error) {
-        return res.status(500).send({message : "error", error : error});
-    }
-}
 
 
 exports.deleteOrder = async (req,res)=>{

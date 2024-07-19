@@ -6,7 +6,8 @@ const orderRoutes = require("./routes/order")
 const cors = require("cors");
 // const multer = require("multer");
 const path = require("path");
-const stripe = require("stripe")("your-secret-key");
+const Order = require("./model/order")
+const stripe = require("stripe")("sk_test_51PQ23NKhZAmovhQkXOdFXfAunfNMJE8uHnXbbfBGksOMirucY7PwsikhvEvYaynFx5l3xvZvH5IYJrXPOuvbrHlb00Cge3ywXo");
 
 const app = express();
 
@@ -27,7 +28,8 @@ app.use("/products",productRoute);
 app.use("/orders",orderRoutes);
 
 app.post("/create-checkout-session",async (req,res)=>{
-    const { products } = req.body;
+    const { products , userId , customerName , customerContactNumber , address , pinCode}  = req.body;
+    console.log(products)
     const lineItems = products.map((product)=>(
         {
             price_data : {
@@ -48,6 +50,13 @@ app.post("/create-checkout-session",async (req,res)=>{
         success_url : "http://localhost:5173/paymentsuccess",
         cancel_url : "http://localhost:5173/cancelPayment"
     });
+
+    const order = new Order({
+        product : products , userId , customerName , customerContactNumber , address , pinCode : +pinCode , transactionId : session.id
+    });
+
+    await order.save();
+
     res.json({id : session.id});
 
 })

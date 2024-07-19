@@ -100,7 +100,7 @@ exports.login = async (req,res)=>{
 
         
 
-        const token = jwt.sign({id : user._id , name : `${user.firstName} ${user.lastName}`,role : user.role},"your_jwt_secret_key" , {"expiresIn" : "10h"});
+        const token = jwt.sign({ name : `${user.firstName} ${user.lastName}`,role : user.role , _id : user._id},"your_jwt_secret_key" , {"expiresIn" : "10h"});
         res.status(200).send({message : "User LoggedIn" , data : user , token : token  , role   : user.role})
 
     } catch (error) {

@@ -28,8 +28,8 @@ const Products = () => {
                 {products?.map((item) => (
                     <div key={item.id} className='bg-white shadow rounded p-4 flex flex-col items-center'>
                         <img src={`http://localhost:3000/${item.productImage}`} alt="" className='w-[200px] h-[200px]' />
-                        <h4>{item.title}</h4>
-                        <p>{item.price}</p>
+                        <h4>{item.productName}</h4>
+                        <p>{item.productPrice}</p>
                         <button onClick={() => { handleClick(item) }} className='p-2 bg-orange-500 text-white rounded shadow'>Add to cart</button>
                     </div>
                 ))}

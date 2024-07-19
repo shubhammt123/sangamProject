@@ -16,6 +16,7 @@ import AdminProduct from '../components/AdminProduct'
 import AdminOrder from '../components/AdminOrder'
 import SuccessPayment from '../components/SuccessPayment'
 import CancelPayment from '../components/CancelPayment'
+import Checkout from '../components/Checkout'
 
 const Router = createBrowserRouter([
     
@@ -72,6 +73,10 @@ const Router = createBrowserRouter([
                         path : "/order",
                         element  : <Order />
                     },
+                    {
+                        path : "/checkout",
+                        element : <Checkout />
+                    }
                     
                 ]
             },
