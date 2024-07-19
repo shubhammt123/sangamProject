@@ -27,7 +27,7 @@ const Products = () => {
             <div className='grid grid-cols-3 gap-5 p-5'>
                 {products?.map((item) => (
                     <div key={item.id} className='bg-white shadow rounded p-4 flex flex-col items-center'>
-                        <img src={`http://localhost:3000/${item.productImage}`} alt="" className='w-[200px] h-[200px]' />
+                        <img src={`${import.meta.env.VITE_API_URI}/${item.productImage}`} alt="" className='w-[200px] h-[200px]' />
                         <h4>{item.productName}</h4>
                         <p>{item.productPrice}</p>
                         <button onClick={() => { handleClick(item) }} className='p-2 bg-orange-500 text-white rounded shadow'>Add to cart</button>

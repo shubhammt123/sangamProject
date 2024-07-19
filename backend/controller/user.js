@@ -75,6 +75,7 @@ exports.signup = async (req,res)=>{
         await user.save();
         return res.status(201).send({message : "User Created", data : user})
     } catch (error) {
+        console.log(error)
         return res.status(500).send({message : "error", error : error});
     }
 }

@@ -39,12 +39,14 @@ exports.createProduct = async (req,res)=>{
 exports.updateProduct = async (req,res)=>{
     const id = req.params.id;
     const reqBody = req.body;
+    console.log(reqBody);
     try {
         const existingProduct = await Product.findById(id);
         if(!existingProduct){
             return res.status(404).send({message : "Product not found"});
         }
         const product = await Product.findByIdAndUpdate(id,reqBody,{new :true});
+        console.log(product)
         res.status(202).send({message : "Product Updated",data : product});
     } catch (error) {
         console.log(error)

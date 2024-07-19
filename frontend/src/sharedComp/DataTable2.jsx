@@ -50,7 +50,7 @@ export default function DataTable2({open,setOpen , setOpenSnackBar}) {
     const fetchData = async ()=>{
       setLoading(true);
         try {
-            const response = await axios.get("http://localhost:3000/users/getAllUsers");
+            const response = await axios.get(`${import.meta.env.VITE_API_URI}/users/getAllUsers`);
             
             const newRows = response.data.data.map((item , i)=>{
                 return {...item,id : i+1}
@@ -79,7 +79,7 @@ export default function DataTable2({open,setOpen , setOpenSnackBar}) {
       e.preventDefault();
       try {
         
-          const response = await axios.put(`http://localhost:3000/users/updateUser/${formData._id}`,formData);
+          const response = await axios.put(`${import.meta.env.VITE_API_URI}/users/updateUser/${formData._id}`,formData);
           setOpenSnackBar(true);
         handleClose();
         fetchData();
@@ -96,7 +96,7 @@ export default function DataTable2({open,setOpen , setOpenSnackBar}) {
 
     const handleDelete = async (id)=>{
       try {
-        const response = await axios.delete(`http://localhost:3000/users/deleteUser/${id}`);
+        const response = await axios.delete(`${import.meta.env.VITE_API_URI}/users/deleteUser/${id}`);
         fetchData();
       } catch (error) {
         console.log(error);

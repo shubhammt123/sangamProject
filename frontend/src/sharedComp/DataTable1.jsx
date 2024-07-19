@@ -13,7 +13,7 @@ import { BiBorderRadius } from 'react-icons/bi';
 import Switch from '@mui/material/Switch';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct, fetchProducts } from '../redux/slices/productSlice';
+import { createProduct, deleteProduct, fetchProducts, updateProduct } from '../redux/slices/productSlice';
 
 
 
@@ -52,8 +52,6 @@ export default function DataTable1({open,setOpen , setOpenSnackBar}) {
     };
 
     const { products , status  , isSuccess} = useSelector((state)=>state.product)
-
-    console.log(products)
 
     // const fetchData = async ()=>{
     //   setLoading(true);
@@ -107,12 +105,19 @@ export default function DataTable1({open,setOpen , setOpenSnackBar}) {
       data.append("productCategory" , formData.productCategory);
       data.append("productDesc" , formData.productDesc);
       data.append("productImage" , formData.productImage);
-      dispatch(createProduct(data));
+      if (edit) {
+        console.log(formData);
+        dispatch(updateProduct({ id: formData._id, updatedProduct: formData }));
+      } else {
+        dispatch(createProduct(data));
+      }
     }
 
     useEffect(()=>{
         if(isSuccess){
             setOpen(false);
+            setEdit(false);
+            setFormData({})
         }
     },[isSuccess]);
 
@@ -124,8 +129,7 @@ export default function DataTable1({open,setOpen , setOpenSnackBar}) {
 
     const handleDelete = async (id)=>{
       try {
-        const response = await axios.delete(`http://localhost:3000/users/deleteUser/${id}`);
-        fetchData();
+        await dispatch(deleteProduct(id));
       } catch (error) {
         console.log(error);
       }
@@ -143,7 +147,7 @@ export default function DataTable1({open,setOpen , setOpenSnackBar}) {
         width: 160,
         renderCell : (params)=>(
             <div className='flex items-center'>
-               <img src={`http://localhost:3000/${params.row.productImage}`} alt="" className='w-16' />
+               <img src={`${import.meta.env.VITE_API_URI}/${params.row.productImage}`} alt="" className='w-16' />
             </div>
         )
       },

@@ -21,7 +21,7 @@ const Signup = () => {
         data.append("userImage",formData.userImage);
         
         try {
-            const response = await axios.post("http://localhost:3000/users/signup",data);
+            const response = await axios.post(`${import.meta.env.VITE_API_URI}/users/signup`,data);
             console.log(response)
         } catch (error) {
             console.log(error);            

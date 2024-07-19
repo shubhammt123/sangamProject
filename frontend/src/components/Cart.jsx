@@ -68,7 +68,7 @@ const Cart = () => {
                 <div className="grid grid-cols-1 gap-4">
                     {cartItems.map((item, i) => (
                         <div key={i} className="flex items-center space-x-4 bg-white shadow-md rounded p-4">
-                            <img src={`http://localhost:3000/${item.productImage}`} alt={item.productName} className='w-1/4 rounded' />
+                            <img src={`${import.meta.env.VITE_API_URI}/${item.productImage}`} alt={item.productName} className='w-1/4 rounded' />
                             <div className="flex flex-1 justify-between items-center">
                                 <div>
                                 <h2 className="text-xl font-semibold">{item.productName}</h2>
