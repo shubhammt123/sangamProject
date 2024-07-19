@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { insertCartItem, removeCartItem , fetchCartItems as fetchCartItemsDb } from "../../db/db";
 
 const initialState = {
     cartItems: [],
@@ -13,7 +14,7 @@ const cartSlice = createSlice({
     reducers: {
         add(state, action) {
             state.cartItems.push(action.payload);
-            AsyncStorage.setItem("cart", JSON.stringify(state.cartItems));
+            insertCartItem(action.payload);
         },
         setStatus(state, action) {
             state.status = action.payload;
@@ -23,7 +24,7 @@ const cartSlice = createSlice({
         },
         remove(state, action) {
             state.cartItems = state.cartItems.filter((item) => item.id !== action.payload);
-            AsyncStorage.setItem("cart", JSON.stringify(state.cartItems));
+            removeCartItem(action.payload);
         },
         setCartItems(state, action) {
             state.cartItems = action.payload;
@@ -35,10 +36,9 @@ export const { add, remove, setStatus, setError, setCartItems } = cartSlice.acti
 
 export const fetchCartItems = () => async (dispatch) => {
     try {
-        const cart = await AsyncStorage.getItem("cart");
-        if (cart !== null) {
-            dispatch(setCartItems(JSON.parse(cart)));
-        }
+        fetchCartItemsDb((items)=>{
+            dispatch(setCartItems(items));
+        })
     } catch (error) {
         dispatch(setError(error.toString()));
     }

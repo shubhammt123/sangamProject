@@ -6,8 +6,13 @@ import UserNavigation from './UserNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuth } from '../redux/slices/authSlice';
+import { createTables } from '../db/db';
 
 const AppNavigator = () => {
+
+  useEffect(()=>{
+    createTables();
+  },[])
 
   const dispatch = useDispatch();
     
