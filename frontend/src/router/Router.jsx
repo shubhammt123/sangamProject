@@ -11,6 +11,11 @@ import MyOrder from '../components/MyOrder'
 import Order from '../components/Order'
 import Admin from '../components/Admin'
 import AdminUser from '../components/AdminUser'
+import Cart from '../components/Cart'
+import AdminProduct from '../components/AdminProduct'
+import AdminOrder from '../components/AdminOrder'
+import SuccessPayment from '../components/SuccessPayment'
+import CancelPayment from '../components/CancelPayment'
 
 const Router = createBrowserRouter([
     
@@ -20,6 +25,18 @@ const Router = createBrowserRouter([
             {
                 path : "/",
                 element : <Home />
+            },
+            {
+                path : "/cart",
+                element : <Cart />
+            },
+            {
+                path : "/paymentsuccess",
+                element  : <SuccessPayment />
+            },
+            {
+                path : "/cancelPayment",
+                element  : <CancelPayment />
             },
             {
                 element : <UnProtected />,
@@ -54,7 +71,8 @@ const Router = createBrowserRouter([
                     {
                         path : "/order",
                         element  : <Order />
-                    }
+                    },
+                    
                 ]
             },
             {
@@ -67,6 +85,14 @@ const Router = createBrowserRouter([
                     {
                         path : "/adminuser",
                         element : <AdminUser />
+                    },
+                    {
+                        path : "/adminproduct",
+                        element : <AdminProduct />
+                    },
+                    {
+                        path : "/adminorder",
+                        element : <AdminOrder />
                     }
                 ]
             },

@@ -12,6 +12,8 @@ import Modal from '@mui/material/Modal';
 import { BiBorderRadius } from 'react-icons/bi';
 import Switch from '@mui/material/Switch';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import { createProduct, fetchProducts } from '../redux/slices/productSlice';
 
 
 
@@ -31,12 +33,14 @@ const style = {
 
 
 
-export default function DataTable({open,setOpen , setOpenSnackBar}) {
+export default function DataTable1({open,setOpen , setOpenSnackBar}) {
 
     const [rows , setRows] = useState([]);
     const [formData,setFormData] = useState({});
     const [edit,setEdit] = useState(false);
     const [loading , setLoading] = useState(null);
+
+    const dispatch = useDispatch();
     
     // const [rowData , setRowData] = useState({});
     console.log(rows[2]?.userImage)
@@ -47,29 +51,49 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
       setEdit(false);
     };
 
+    const { products , status  , isSuccess} = useSelector((state)=>state.product)
+
+    console.log(products)
+
+    // const fetchData = async ()=>{
+    //   setLoading(true);
+    //     try {
+    //         const response = await axios.get("http://localhost:3000/users/getAllUsers");
+            
+    //         const newRows = response.data.data.map((item , i)=>{
+    //             return {...item,id : i+1}
+    //         });
+    //         setRows(newRows);
+    //         setLoading(false);
+            
+    //     } catch (error) {
+    //         console.log(error);
+    //         setLoading(false);
+    //     }
+    // } 
+
     const fetchData = async ()=>{
-      setLoading(true);
-        try {
-            const response = await axios.get("http://localhost:3000/users/getAllUsers");
-            
-            const newRows = response.data.data.map((item , i)=>{
-                return {...item,id : i+1}
-            });
-            setRows(newRows);
-            setLoading(false);
-            
-        } catch (error) {
-            console.log(error);
-            setLoading(false);
-        }
-    } 
+        
+        dispatch(fetchProducts());
+      } 
 
     useEffect(()=>{
         fetchData();
     },[]);
 
+    useEffect(()=>{
+        if(products){
+            const newRows = products.map((item , i)=>{
+            return {...item,id : i+1}
+            });
+            setRows(newRows);
+           
+        }
+    },[products]);
+
     const handleChange = (e)=>{
-      setFormData({...formData,[e.target.name] : e.target.value});
+        console.log(e.target)
+      setFormData({...formData,[e.target.name] : e.target.files ? e.target.files[0] : e.target.value});
     }
 
     const handleSwitch = (e)=>{
@@ -77,16 +101,20 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
     }
     const handleSubmit = async (e)=>{
       e.preventDefault();
-      try {
-        
-          const response = await axios.put(`http://localhost:3000/users/updateUser/${formData._id}`,formData);
-          setOpenSnackBar(true);
-        handleClose();
-        fetchData();
-      } catch (error) {
-        console.log(error);
-      }
+      const data = new FormData();
+      data.append("productName" , formData.productName);
+      data.append("productPrice" , formData.productPrice);
+      data.append("productCategory" , formData.productCategory);
+      data.append("productDesc" , formData.productDesc);
+      data.append("productImage" , formData.productImage);
+      dispatch(createProduct(data));
     }
+
+    useEffect(()=>{
+        if(isSuccess){
+            setOpen(false);
+        }
+    },[isSuccess]);
 
     const handleEditCLick = (data)=>{
       setEdit(true)
@@ -104,33 +132,38 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
     }
     const columns = [
       { field: 'id', headerName: 'ID', width: 70 },
-      { field: 'firstName', headerName: 'First Name', width: 130 },
-      { field: 'lastName', headerName: 'Last Name', width: 130 },
+      { field: 'productName', headerName: 'Product Name', width: 130 },
+      { field: 'productPrice', headerName: 'Price', width: 130 },
     
-      { field: 'email', headerName: 'Email', width: 240 },
+      { field: 'productCategory', headerName: 'Category', width: 240 },
       {
-        field: 'contactNumber',
-        headerName: 'Contact Number',
+        field: 'image',
+        headerName: 'image',
         
         width: 160,
+        renderCell : (params)=>(
+            <div className='flex items-center'>
+               <img src={`http://localhost:3000/${params.row.productImage}`} alt="" className='w-16' />
+            </div>
+        )
       },
-      {
-        // field: 'password',
-        headerName: 'Password',
-        width: 160,
-        renderCell : ()=>(
-          <div>
-              *****
-          </div>
-      )
-      },
+    //   {
+    //     // field: 'password',
+    //     headerName: 'Password',
+    //     width: 160,
+    //     renderCell : ()=>(
+    //       <div>
+    //           *****
+    //       </div>
+    //   )
+    //   },
       {
         field : 'status',
         headerName : 'Status',
         width : 160,
         renderCell : (params)=>(
             <div>
-               {params.row.status ? "Active" : "Deactive"}
+               {params.row.status ? "In-Stcok" : "Out of Stock"}
             </div>
         )
       },
@@ -185,7 +218,7 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {edit ? "Edit User" : "Add User"}
+            {edit ? "Edit Product" : "Add Product"}
           </Typography>
           <div>
           
@@ -193,16 +226,19 @@ export default function DataTable({open,setOpen , setOpenSnackBar}) {
             <form onSubmit={handleSubmit}>
               <div className='grid grid-cols-2 gap-4 my-4'>
               <div>
-              <input type="text" placeholder='Firstname' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='firstName' onChange={handleChange} value={formData.firstName || ""} />
+              <input type="text" placeholder='Productname' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='productName' onChange={handleChange} value={formData.productName || ""} />
               </div>
-              <div> <input type="text" placeholder='lastname' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='lastName' onChange={handleChange} value={formData.lastName || ""} /></div>
-              <div><input type="email" placeholder='Email' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='email'  onChange={handleChange} value={formData.email || ""} /></div>
-              <div><input type="password" placeholder='Password' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='password'  onChange={handleChange} disabled={edit} value={formData.password || ""}/></div>
-              <div><input type="number" placeholder='Contact Number' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='contactNumber'  onChange={handleChange} value={formData.contactNumber || ""} /></div>
-              <div  className='flex items-center'>
-              <Switch defaultChecked={formData.status} name='status' onChange={handleSwitch} />
-              <p>{formData.status ? "Active" : "Deactive"}</p>
-              </div>
+              <div> <input type="text" placeholder='Productprice' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='productPrice' onChange={handleChange} value={formData.productPrice || ""} /></div>
+              <div><input type="text" placeholder='Productcategory' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='productCategory'  onChange={handleChange} value={formData.productCategory || ""} /></div>
+              <div><input type="text" placeholder='Product Description' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='productDesc'  onChange={handleChange} value={formData.productDesc || ""}/></div>
+              <div className='col-span-2'><input type="file" placeholder='Product Image' className='p-2 py-1 outline-none border border-gray-400 rounded ' name='productImage'  onChange={handleChange}  /></div>
+              {edit && (
+                <div  className='flex items-center'>
+                <Switch defaultChecked={formData.status} name='status' onChange={handleSwitch} />
+                <p>{formData.status ? "In-Stock" : "Out of Stock"}</p>
+                </div>
+              )}
+              
               </div>
               <button type="submit" className='bg-blue-600 text-white p-2 rounded  py-1 active:bg-blue-800'>Submit</button>
             </form>

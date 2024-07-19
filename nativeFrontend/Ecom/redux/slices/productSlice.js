@@ -3,6 +3,12 @@ import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_BACKEND_API;
 
+export const STATUES = Object.freeze({
+  IDLE  : "idle",
+  LOADING : "loading",
+  ERROR : "error"
+})
+
 const initialState = {
   products: [],
   selectedProduct: null,

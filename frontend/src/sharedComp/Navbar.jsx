@@ -1,17 +1,18 @@
 import React from 'react'
 import { IoMdSearch } from "react-icons/io";
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { logout, setAuth } from '../redux/slices/authSlice';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -23,14 +24,18 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 
-const Navbar = ({context}) => {
+
+
+const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogOut = ()=>{
     localStorage.clear();
-    // context.setAuth(false);
+    dispatch(logout());
   }
 
-  const {  cartItems } = useSelector((state)=>state.cart)
-
+  const {  cartItems } = useSelector((state)=>state.cart);
+  const { auth  , role} =   useSelector((state)=>state.auth);
   return (
     <div className='bg-white flex justify-between items-center p-2 py-4'>
         <div >
@@ -43,69 +48,26 @@ const Navbar = ({context}) => {
             </div>
             
         </div>
-        <div className='flex gap-4'>
-          <div>My Cart : {cartItems.length}</div>
-          <div><IconButton aria-label="cart">
+        <div className='flex gap-4 items-center'>
+          {/* <div>My Cart : {cartItems.length}</div> */}
+          <div><IconButton aria-label="cart" onClick={()=>{navigate("/cart")}}>
       <StyledBadge badgeContent={cartItems.length} color="secondary">
         <ShoppingCartIcon />
       </StyledBadge>
     </IconButton></div>
-          {context?.auth ? (
-            context.role === "user" ? 
-            <div>
-              
-      {/* <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          // value={age}
-          label="Age"
-          // onChange={handleChange}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
-        <FormHelperText>With label + helper text</FormHelperText>
-      </FormControl> */}
-      <FormControl sx={{   border: "none" , outline : "none" }}>
-        {context.role === "user" ?  (<Select
-          // value={age}
-          // onChange={handleChange}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Without label' }}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>My Order</MenuItem>
-          <MenuItem value={20}>Profile</MenuItem>
-          <MenuItem value={30} onClick={handleLogOut}>Logout</MenuItem>
-        </Select>) : (
-          <Select
-          // value={age}
-          // onChange={handleChange}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Without label' }}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Admin</MenuItem>
-          <MenuItem value={20}>Profile</MenuItem>
-          <MenuItem value={30} onClick={handleLogOut}>Logout</MenuItem>
-        </Select>
-        )}
-        
-        {/* <FormHelperText>Without label</FormHelperText> */}
-      </FormControl>
-    </div>
+          {auth ? (
+            role === "user" ? 
+            <div className='flex items-center gap-2'>
+               <Link to="/myorder">My Order</Link>
+               <div onClick={handleLogOut}  className='cursor-pointer'>Log out</div>
+            </div>
+           
 
-             : <div><Link to="/adminuser">User</Link></div>
+             : <div className='flex items-center gap-3'><Link to="/adminuser">User</Link>
+             <Link to="/adminproduct">Product</Link>
+             <Link to="/adminorder">Order</Link>
+             <div onClick={handleLogOut} className='cursor-pointer'>Log out</div>
+             </div>
           ) :<Link to="/login">
           Login/Signup
           </Link> }

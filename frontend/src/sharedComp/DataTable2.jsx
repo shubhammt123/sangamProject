@@ -31,7 +31,7 @@ const style = {
 
 
 
-export default function DataTable({open,setOpen , setOpenSnackBar}) {
+export default function DataTable2({open,setOpen , setOpenSnackBar}) {
 
     const [rows , setRows] = useState([]);
     const [formData,setFormData] = useState({});

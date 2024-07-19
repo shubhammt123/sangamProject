@@ -1,92 +1,118 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+// const baseURL = process.env.REACT_APP_BACKEND_API;
 
 export const STATUES = Object.freeze({
-    IDLE  : "idle",
-    LOADING : "loading",
-    ERROR : "error"
+  IDLE  : "idle",
+  LOADING : "loading",
+  ERROR : "error"
 })
 
 const initialState = {
-    products : [],
-    status : "idle",
-    error : null
+  products: [],
+  selectedProduct: null,
+  status: 'idle',
+  error: null,
+  isSuccess : false
 };
 
-export const fetchData = createAsyncThunk("product/fetchData", async ()=>{
-    const response = await axios.get("https://fakestoreapi.com/products");
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
+    const response = await axios.get(`${import.meta.env.VITE_API_URI}/products/getAllProducts`);
+    return response.data.data;
+});
+
+
+export const createProduct = createAsyncThunk('products/createProduct', async (product) => {
+    const response = await axios.post(`${import.meta.env.VITE_API_URI}/products/createProduct`, product);
     return response.data;
-})
-const addProduct = createAsyncThunk("product/addProduct", async (data)=>{
-    const response = await axios.post("http://localhost:3000/product/addProduct",data);
+});
+
+export const fetchProductById = createAsyncThunk('products/fetchProductById', async (id) => {
+    const response = await axios.get(`https://fakestoreapi.com/products/${id}`);
     return response.data;
-})
+});
 
 
-const productSlice = createSlice({
-    name : "product",
-    initialState,
-    reducers : {
-        // productData(state,action){
-        //     state.products = action.payload
-        // },
-        // setStatus(state,action){
-        //     state.status =  action.payload;
-        // },
-        // setError(state,action){
-        //     state.error =  action.payload;
-        // },
-    },
-    extraReducers : (builder)=>{
-        builder
-        .addCase(fetchData.pending , (state,action)=>{
-            state.status = STATUES.LOADING
-        })
-        .addCase(fetchData.fulfilled , (state,action)=>{
-            state.products = action.payload;
-            state.status = STATUES.IDLE;
-        })
-        .addCase(fetchData.rejected,(state , action)=>{
-            state.status = STATUES.ERROR;
-            state.error = action.payload;
-        })
-        .addCase(addProduct.pending,()=>{
-
-        })
-        .addCase(addProduct.fulfilled,()=>{})
-        .addCase(addProduct.rejected  ,()=>{})
-    }
-
-})
-
-export const {productData , setStatus , setError} = productSlice.actions;
-
-export default productSlice.reducer;
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id) => {
+    const response = await axios.delete(`${baseURL}/api/product/${id}`);
+    return response.data; 
+});
 
 
-// export function fetchData(){
-//     return async function fetchDataThunk(dispatch,getState){
-//         dispatch(setStatus(STATUES.LOADING));
-//         try {
-//            const response = await axios.get("https://fakestoreapi.com/products");
-//            dispatch(setStatus(STATUES.IDLE));
-//            dispatch(productData(response.data));
-//         } catch (error) {
-//             dispatch(setStatus(STATUES.ERROR));
-//             dispatch(setError(error));
-//         }
-//     }
-// }
+export const updateProduct = createAsyncThunk('products/updateProduct', async ( id, updatedProduct) => {
+    const response = await axios.put(`${baseURL}/api/product/${id}`, updatedProduct);
+    return response.data;
+});
 
+const productsSlice = createSlice({
+  name: 'products',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.products = action.payload;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.error.message;
+      })
+      .addCase(createProduct.pending, (state, action) => {
+        state.isSuccess = false;
+        state.status = "loading"
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.status = "idle"
+        state.isSuccess = true;
+        state.products.push(action.payload);
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.status = "error"
+        state.isSuccess = false;
+        state.error = action.payload || 'Failed to create product';
+      })
+      .addCase(fetchProductById.pending, (state) => {
+        state.status = 'loading';
+        state.selectedProduct = null;
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.selectedProduct = action.payload;
+      })
+      .addCase(fetchProductById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload || 'Failed to fetch product by ID';
+      })
+      .addCase(deleteProduct.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.status = "idle"
+        state.products = state.products.filter(product => product._id !== action.payload);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.status = "error"
+        state.error = action.payload || 'Failed to delete product';
+      })
+      .addCase(updateProduct.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        const index = state.products.findIndex(product => product._id === action.payload._id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+        state.selectedProduct = action.payload;
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.error = action.payload || 'Failed to update product';
+      });
+  },
+});
 
-// Add product -- admin
-// update -- admin
-// delete - admin
-// fetchProduct --- "/"
-// redux toolkit frontend plus backend
-
-// create order - user
-// show all order - admin
-// show my order - user
-// update order - admin
-// delete order - admin and user
+export default productsSlice.reducer;

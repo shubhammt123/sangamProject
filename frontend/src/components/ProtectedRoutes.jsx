@@ -1,24 +1,27 @@
 import React, { useEffect } from 'react'
-import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
+import { Outlet, useNavigate} from 'react-router-dom'
 import Navbar from '../sharedComp/Navbar';
+import { useSelector } from 'react-redux';
 
 const ProtectedRoutes = ({allowedRole}) => {
-    const context = useOutletContext();
+    
     const navigate = useNavigate();
-    console.log(context);
+    
+
+    const {auth , role} = useSelector((state)=>state.auth);
 
     useEffect(()=>{
-        if(!context.auth){
+        if(!auth){
             return navigate("/login")
         }
 
-        if(!allowedRole.includes(context.role)){
+        if(!allowedRole.includes(role)){
             return  navigate("/");
         }
     },[])
   return (
     <div>
-      <Navbar context={context} />
+      <Navbar />
       <Outlet /></div>
   )
 }

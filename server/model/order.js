@@ -12,7 +12,9 @@ const productSchema = mongoose.Schema({
     ProductDesc : {type : String , required : true , unique : true},
     ProductCategory : {type : String , required : true},
     ProductImage : {type : String , required : true},
-    }] 
+    }],
+    transactionId: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("Order",productSchema);

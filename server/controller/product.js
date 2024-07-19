@@ -22,15 +22,16 @@ exports.getProductById = async (req,res)=>{
 
 exports.createProduct = async (req,res)=>{
     const { productName , productPrice , productDesc, productCategory  } = req.body;
-
+    console.log(productDesc);
     try {
 
         const productImage = req.file.path;
         const product = new Product({productName : productName , productPrice : productPrice , productDesc : productDesc, productCategory  : productCategory , status : true , productImage : productImage});
-
+        console.log(product);
         await product.save();
         return res.status(201).send({message : "Product Created", data : product})
     } catch (error) {
+        console.log(error)
         return res.status(500).send({message : "error", error : error});
     }
 }

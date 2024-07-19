@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
-import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
+import { useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom'
 
 const UnProtected = () => {
-    const context = useOutletContext();
     const navigate = useNavigate();
-    console.log(context);
+    const { auth } = useSelector((state)=>state.auth)
 
     useEffect(()=>{
-        if(context.auth){
+        if(auth){
             return navigate("/")
         }
     },[])
@@ -15,7 +15,7 @@ const UnProtected = () => {
     
   return (
     <div>
-        <Outlet context={context} />
+        <Outlet />
     </div>
   )
 }

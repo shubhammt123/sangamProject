@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Vector from "../assets/4957136.jpg";
 import axios from 'axios';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../redux/slices/authSlice';
 
 const Login = () => {
     const [formData ,setFormData] = useState({});
     const navigate = useNavigate();
-    const context = useOutletContext();
 
 
     const handleChange = (e)=>{
         setFormData({...formData , [e.target.name] : e.target.value});
     }
+
+    const dispatch = useDispatch();
+    const { auth }   = useSelector((state)=>state.auth);
     const  handleSubmit = async (e)=>{
         e.preventDefault();
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URI}/users/login`,formData);
-            context.setAuth(true);
-            context.setRole(response.data.data.role)
-            localStorage.setItem("token",response.data.token);
-            // localStorage.setItem("role",response.data.data.role)
-            navigate("/")
-            console.log(response)
-        } catch (error) {
-            console.log(error);            
-        }
+        dispatch(login(formData));
     }
+
+    useEffect(()=>{
+        if(auth){
+            navigate("/");
+        }
+    },[auth]);
   return (
     <div className='h-screen flex justify-center items-center'>
         <div className='bg-white w-4/5 flex shadow-2xl rounded-xl'>

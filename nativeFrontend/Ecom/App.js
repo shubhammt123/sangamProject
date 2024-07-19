@@ -5,9 +5,12 @@ import AppNavigator from './Navigations/AppNavigator';
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
 import registerNNPushToken from 'native-notify';
+import { useEffect } from 'react';
 
 export default function App() {
   registerNNPushToken(22492, 'vLVwD12ZwJOHxPFHlh1h1Q');
+  
+  
   return (
     <Provider store={store}>
     <NavigationContainer>

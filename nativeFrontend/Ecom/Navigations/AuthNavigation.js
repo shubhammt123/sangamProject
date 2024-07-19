@@ -7,6 +7,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../components/Login';
 import Signup from '../components/Signup';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Feather from '@expo/vector-icons/Feather';
+import { useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -22,10 +24,12 @@ const LoginStack = ()=>{
 
 
 const AuthNavigation = () => {
+  const { cartItems } = useSelector((state)=>state.cart);
   return (
     <Tab.Navigator>
         <Tab.Screen name='HomeScreen' component={HomeNavigation} options={{headerShown : false , tabBarIcon : ()=><FontAwesome name="home" size={24} color="black" />}} />
-        <Tab.Screen name='Cart' component={Cart} />
+        <Tab.Screen name='Cart' component={Cart}  options={{ tabBarIcon : ({color})=><Feather name="shopping-cart" size={24} color={color} /> , tabBarBadge : cartItems?.length}} />
+
         <Tab.Screen name='LoginScreen' component={LoginStack} options={{headerShown : false}} />
     </Tab.Navigator>
   )
