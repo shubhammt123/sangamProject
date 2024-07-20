@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IoMdSearch } from "react-icons/io";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
@@ -29,13 +29,24 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  
+
+
+
+  const {  cartItems } = useSelector((state)=>state.cart);
+  const { auth  , role} =   useSelector((state)=>state.auth);
+
   const handleLogOut = ()=>{
     localStorage.clear();
     dispatch(logout());
   }
 
-  const {  cartItems } = useSelector((state)=>state.cart);
-  const { auth  , role} =   useSelector((state)=>state.auth);
+  useEffect(()=>{
+    if(!auth){
+      navigate("/login");
+    }
+  },[auth])
   return (
     <div className='bg-white flex justify-between items-center p-2 py-4'>
         <div >

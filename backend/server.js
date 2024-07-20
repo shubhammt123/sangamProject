@@ -19,8 +19,8 @@ connectDb();
 // const upload = multer({ dest: 'uploads/' })
 app.use("/uploads",express.static(path.join(__dirname,"uploads")));
 
-app.get("/",(req,res)=>{
-    res.send("Hello")
+app.get("/",(req,res)=>{  // http:..localhost:3000
+    res.send("Hello")  
 })
 
 app.use("/users",userRoutes);
@@ -47,8 +47,8 @@ app.post("/create-checkout-session",async (req,res)=>{
         payment_method_types : ["card"],
         line_items : lineItems,
         mode : "payment",
-        success_url : "http://localhost:5173/paymentsuccess",
-        cancel_url : "http://localhost:5173/cancelPayment"
+        success_url : "https://sangam-project-4tr7.vercel.app/paymentsuccess",
+        cancel_url : "https://sangam-project-4tr7.vercel.app/cancelPayment"
     });
 
     const order = new Order({
